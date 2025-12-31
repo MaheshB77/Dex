@@ -39,6 +39,7 @@ struct ContentView: View {
             }
             Text("Select an item")
         }
+        .preferredColorScheme(.dark)
     }
     
 }
