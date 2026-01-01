@@ -46,7 +46,8 @@ struct HomeScreen: View {
             List {
                 ForEach(pokemons) { pokemon in
                     NavigationLink {
-                        Text(pokemon.name ?? "Unknown")
+                        PokemonDetails()
+                            .environmentObject(pokemon)
                     } label: {
                         AsyncImage(url: pokemon.sprite) { img in
                             img
