@@ -5,20 +5,22 @@
 //  Created by Mahesh Bansode on 01/01/26.
 //
 
-
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct HomeScreen: View {
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Pokemon.id, ascending: true)],
-        animation: .default)
+        sortDescriptors: [
+            NSSortDescriptor(keyPath: \Pokemon.id, ascending: true)
+        ],
+        animation: .default
+    )
     private var pokemons: FetchedResults<Pokemon>
-    
+
     let fetcher = PokemonService()
-    
+
     var body: some View {
         NavigationStack {
             List {
@@ -41,17 +43,19 @@ struct HomeScreen: View {
                 }
             }
         }
-//        .preferredColorScheme(.dark)
+        //        .preferredColorScheme(.dark)
     }
-    
+
     private func fetchPokemons() {
         Task {
             for id in 1..<152 {
                 do {
-                    let fetchedPokemon = try await fetcher.fetchPokemon(byID: id)
-                    
+                    let fetchedPokemon = try await fetcher.fetchPokemon(
+                        byID: id
+                    )
+
                     let pokemon = Pokemon(context: viewContext)
-                    
+
                     pokemon.id = fetchedPokemon.id
                     pokemon.name = fetchedPokemon.name
                     pokemon.types = fetchedPokemon.types
@@ -63,7 +67,7 @@ struct HomeScreen: View {
                     pokemon.speed = fetchedPokemon.speed
                     pokemon.sprite = fetchedPokemon.sprite
                     pokemon.shiny = fetchedPokemon.shiny
-                    
+
                     try viewContext.save()
                 } catch {
                     print(error)
@@ -74,5 +78,8 @@ struct HomeScreen: View {
 }
 
 #Preview {
-    HomeScreen().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    HomeScreen().environment(
+        \.managedObjectContext,
+        PersistenceController.preview.container.viewContext
+    )
 }
