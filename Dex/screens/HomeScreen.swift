@@ -55,6 +55,7 @@ struct HomeScreen: View {
                                 .frame(width: 100, height: 100)
                         } placeholder: {
                             ProgressView()
+                                .frame(width: 100, height: 100)
                         }
                         VStack(alignment: .leading) {
                             HStack {
@@ -81,6 +82,17 @@ struct HomeScreen: View {
                             }
                         }
                     }
+                    .swipeActions(edge: .leading) {
+                        Button(pokemon.favorite ? "Remove from favorites" : "Add to favorites") {
+                            pokemon.favorite.toggle()
+                            do {
+                                try viewContext.save()
+                            } catch {
+                                print("Failed to update favorite status: \(error)")
+                            }
+                        }
+                        .tint(pokemon.favorite ? .gray : .yellow)
+                    }
                 }
             }
             .navigationTitle("Pokedex")
@@ -103,7 +115,7 @@ struct HomeScreen: View {
                     }
                 }
                 ToolbarItem {
-                    Button("Add Item", systemImage: "plus") {
+                    Button("Add Item", systemImage: "arrow.clockwise") {
                         fetchPokemons()
                     }
                 }
