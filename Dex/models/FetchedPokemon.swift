@@ -44,6 +44,33 @@ struct FetchedPokemon: Decodable {
             case shiny = "frontShiny"
         }
     }
+    
+    // Memberwise initializer for creating dummy data
+    init(
+        id: Int16,
+        name: String,
+        types: [String],
+        hp: Int16,
+        attack: Int16,
+        defense: Int16,
+        specialAttack: Int16,
+        specialDefense: Int16,
+        speed: Int16,
+        sprite: URL,
+        shiny: URL
+    ) {
+        self.id = id
+        self.name = name
+        self.types = types
+        self.hp = hp
+        self.attack = attack
+        self.defense = defense
+        self.specialAttack = specialAttack
+        self.specialDefense = specialDefense
+        self.speed = speed
+        self.sprite = sprite
+        self.shiny = shiny
+    }
 
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)

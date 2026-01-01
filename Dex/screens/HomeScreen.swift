@@ -28,7 +28,31 @@ struct HomeScreen: View {
                     NavigationLink {
                         Text(pokemon.name ?? "Unknown")
                     } label: {
-                        Text(pokemon.name ?? "Unknown")
+                        AsyncImage(url: pokemon.sprite) { img in
+                            img
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                        } placeholder: {
+                            ProgressView()
+                        }
+                        VStack(alignment: .leading) {
+                            Text(pokemon.name?.capitalized ?? "Unknown")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            
+                            HStack {
+                                ForEach(pokemon.types ?? [], id: \.self) { type in
+                                    Text(type.capitalized)
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 4)
+                                        .background(Color(type.capitalized))
+                                        .clipShape(.capsule)
+                                }
+                            }
+                        }
                     }
                 }
             }
