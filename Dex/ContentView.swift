@@ -16,6 +16,8 @@ struct ContentView: View {
         animation: .default)
     private var pokemons: FetchedResults<Pokemon>
     
+    let fetcher = PokemonService()
+    
     var body: some View {
         NavigationView {
             List {
@@ -33,7 +35,7 @@ struct ContentView: View {
                 }
                 ToolbarItem {
                     Button("Add Item", systemImage: "plus") {
-                        
+                        fetchPokemons()
                     }
                 }
             }
@@ -42,6 +44,33 @@ struct ContentView: View {
         .preferredColorScheme(.dark)
     }
     
+    private func fetchPokemons() {
+        Task {
+            for id in 1..<152 {
+                do {
+                    let fetchedPokemon = try await fetcher.fetchPokemon(byID: id)
+                    
+                    let pokemon = Pokemon(context: viewContext)
+                    
+                    pokemon.id = fetchedPokemon.id
+                    pokemon.name = fetchedPokemon.name
+                    pokemon.types = fetchedPokemon.types
+                    pokemon.hp = fetchedPokemon.hp
+                    pokemon.attack = fetchedPokemon.attack
+                    pokemon.defense = fetchedPokemon.defense
+                    pokemon.specialAttack = fetchedPokemon.specialAttack
+                    pokemon.specialDefense = fetchedPokemon.specialDefense
+                    pokemon.speed = fetchedPokemon.speed
+                    pokemon.sprite = fetchedPokemon.sprite
+                    pokemon.shiny = fetchedPokemon.shiny
+                    
+                    try viewContext.save()
+                } catch {
+                    print(error)
+                }
+            }
+        }
+    }
 }
 #Preview {
     ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
