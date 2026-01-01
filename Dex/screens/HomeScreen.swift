@@ -1,14 +1,15 @@
 //
-//  ContentView.swift
+//  HomeScreen.swift
 //  Dex
 //
-//  Created by Mahesh Bansode on 31/12/25.
+//  Created by Mahesh Bansode on 01/01/26.
 //
+
 
 import SwiftUI
 import CoreData
 
-struct ContentView: View {
+struct HomeScreen: View {
     @Environment(\.managedObjectContext) private var viewContext
     
     @FetchRequest(
@@ -19,7 +20,7 @@ struct ContentView: View {
     let fetcher = PokemonService()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(pokemons) { pokemon in
                     NavigationLink {
@@ -39,9 +40,8 @@ struct ContentView: View {
                     }
                 }
             }
-            Text("Select an item")
         }
-        .preferredColorScheme(.dark)
+//        .preferredColorScheme(.dark)
     }
     
     private func fetchPokemons() {
@@ -72,6 +72,7 @@ struct ContentView: View {
         }
     }
 }
+
 #Preview {
-    ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+    HomeScreen().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
