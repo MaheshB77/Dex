@@ -134,10 +134,6 @@ struct HomeScreen: View {
                     pokemon.sprite = fetchedPokemon.sprite
                     pokemon.shiny = fetchedPokemon.shiny
 
-                    if pokemon.id % 10 == 0 {
-                        pokemon.favorite = true
-                    }
-
                     try viewContext.save()
                 } catch {
                     print(error)
