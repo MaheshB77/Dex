@@ -11,15 +11,28 @@ import SwiftUI
 struct HomeScreen: View {
     @Environment(\.managedObjectContext) private var viewContext
 
-    @FetchRequest(
+    @FetchRequest<Pokemon>(
         sortDescriptors: [
             NSSortDescriptor(keyPath: \Pokemon.id, ascending: true)
         ],
         animation: .default
     )
-    private var pokemons: FetchedResults<Pokemon>
-
-    let fetcher = PokemonService()
+    private var pokemons
+    private let fetcher = PokemonService()
+    private var dynamicPredicate: NSPredicate {
+        var predicates: [NSPredicate] = []
+        
+        // Search predicate
+        if !searchStr.isEmpty {
+            predicates.append(NSPredicate(format: "name contains[c] %@", searchStr))
+        }
+        
+        // Filter predicate
+        
+        // Combine and return
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
+    @State private var searchStr = ""
 
     var body: some View {
         NavigationStack {
@@ -40,9 +53,10 @@ struct HomeScreen: View {
                             Text(pokemon.name?.capitalized ?? "Unknown")
                                 .font(.title2)
                                 .fontWeight(.bold)
-                            
+
                             HStack {
-                                ForEach(pokemon.types ?? [], id: \.self) { type in
+                                ForEach(pokemon.types ?? [], id: \.self) {
+                                    type in
                                     Text(type.capitalized)
                                         .font(.subheadline)
                                         .fontWeight(.semibold)
@@ -55,6 +69,12 @@ struct HomeScreen: View {
                         }
                     }
                 }
+            }
+            .navigationTitle("Pokedex")
+            .searchable(text: $searchStr, prompt: "Search Pokemon")
+            .autocorrectionDisabled()
+            .onChange(of: searchStr) {
+                pokemons.nsPredicate = dynamicPredicate
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
