@@ -19,20 +19,27 @@ struct HomeScreen: View {
     )
     private var pokemons
     private let fetcher = PokemonService()
+    @State private var searchStr = ""
+    @State private var filterByFavorites = false
+
     private var dynamicPredicate: NSPredicate {
         var predicates: [NSPredicate] = []
-        
+
         // Search predicate
         if !searchStr.isEmpty {
-            predicates.append(NSPredicate(format: "name contains[c] %@", searchStr))
+            predicates.append(
+                NSPredicate(format: "name contains[c] %@", searchStr)
+            )
         }
-        
+
         // Filter predicate
-        
+        if filterByFavorites {
+            predicates.append(NSPredicate(format: "favorite == %d", true))
+        }
+
         // Combine and return
         return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
-    @State private var searchStr = ""
 
     var body: some View {
         NavigationStack {
@@ -50,9 +57,15 @@ struct HomeScreen: View {
                             ProgressView()
                         }
                         VStack(alignment: .leading) {
-                            Text(pokemon.name?.capitalized ?? "Unknown")
-                                .font(.title2)
-                                .fontWeight(.bold)
+                            HStack {
+                                Text(pokemon.name?.capitalized ?? "Unknown")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                if pokemon.favorite {
+                                    Image(systemName: "star.fill")
+                                }
+
+                            }
 
                             HStack {
                                 ForEach(pokemon.types ?? [], id: \.self) {
@@ -76,9 +89,18 @@ struct HomeScreen: View {
             .onChange(of: searchStr) {
                 pokemons.nsPredicate = dynamicPredicate
             }
+            .onChange(of: filterByFavorites) {
+                pokemons.nsPredicate = dynamicPredicate
+            }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    Button(
+                        "Favorites",
+                        systemImage: filterByFavorites ? "star.fill" : "star"
+                    ) {
+                        filterByFavorites.toggle()
+
+                    }
                 }
                 ToolbarItem {
                     Button("Add Item", systemImage: "plus") {
@@ -111,6 +133,10 @@ struct HomeScreen: View {
                     pokemon.speed = fetchedPokemon.speed
                     pokemon.sprite = fetchedPokemon.sprite
                     pokemon.shiny = fetchedPokemon.shiny
+
+                    if pokemon.id % 10 == 0 {
+                        pokemon.favorite = true
+                    }
 
                     try viewContext.save()
                 } catch {
