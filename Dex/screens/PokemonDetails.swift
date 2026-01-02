@@ -5,16 +5,16 @@
 //  Created by Mahesh Bansode on 02/01/26.
 //
 
-import SwiftUI
 import CoreData
+import SwiftUI
 
 struct PokemonDetails: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject private var pokemon: Pokemon
     @State private var showShiny = false
-    
+
     var body: some View {
-        
+
         ScrollView {
             ZStack {
                 Image(pokemon.background)
@@ -22,8 +22,8 @@ struct PokemonDetails: View {
                     .scaledToFit()
                     .shadow(color: .black, radius: 4)
                     .padding()
-                
-                AsyncImage(url: pokemon.sprite) { img in
+                AsyncImage(url: showShiny ? pokemon.shiny : pokemon.sprite) {
+                    img in
                     img
                         .interpolation(.none)
                         .resizable()
@@ -34,8 +34,9 @@ struct PokemonDetails: View {
                     ProgressView()
                         .frame(width: 200, height: 200)
                 }
+
             }
-            
+
             HStack {
                 ForEach(pokemon.types!, id: \.self) { type in
                     Text(type.capitalized)
@@ -49,15 +50,14 @@ struct PokemonDetails: View {
                 .padding(.top, 8)
                 Spacer()
             }
-            
+
             VStack(alignment: .leading) {
                 Text("Stats")
                     .font(.title)
                     .padding([.leading, .top])
                 StatsScreen(pokemon: pokemon)
             }
-            
-                
+
         }
         .navigationTitle(pokemon.name!.capitalized)
         .toolbar {
@@ -67,13 +67,23 @@ struct PokemonDetails: View {
                     systemImage: pokemon.favorite ? "star.fill" : "star"
                 ) {
                     pokemon.favorite.toggle()
-                    
+
                     do {
                         try viewContext.save()
                     } catch {
                         print("Failed to update favorite status: \(error)")
                     }
                 }
+            }
+            ToolbarItem {
+                Button(
+                    "Shiny",
+                    systemImage: pokemon.favorite
+                        ? "wand.and.stars" : "wand.and.stars.inverse"
+                ) {
+                    showShiny.toggle()
+                }
+                .tint(showShiny ? .yellow : .primary)
             }
         }
     }
