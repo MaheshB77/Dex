@@ -29,6 +29,7 @@ struct PersistenceController {
         newPokemon.name = "ditto"
         newPokemon.types = ["normal"]
         newPokemon.hp = 48
+        newPokemon.attack = 48
         newPokemon.defense = 48
         newPokemon.specialAttack = 65
         newPokemon.specialDefense = 65

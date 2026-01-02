@@ -17,10 +17,11 @@ struct PokemonDetails: View {
         
         ScrollView {
             ZStack {
-                Image(.normalgrasselectricpoisonfairy)
+                Image(pokemon.background)
                     .resizable()
                     .scaledToFit()
                     .shadow(color: .black, radius: 4)
+                    .padding()
                 
                 AsyncImage(url: pokemon.sprite) { img in
                     img
@@ -48,6 +49,15 @@ struct PokemonDetails: View {
                 .padding(.top, 8)
                 Spacer()
             }
+            
+            VStack(alignment: .leading) {
+                Text("Stats")
+                    .font(.title)
+                    .padding([.leading, .top])
+                StatsScreen(pokemon: pokemon)
+            }
+            
+                
         }
         .navigationTitle(pokemon.name!.capitalized)
         .toolbar {

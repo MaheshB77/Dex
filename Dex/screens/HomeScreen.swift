@@ -51,6 +51,7 @@ struct HomeScreen: View {
                     } label: {
                         AsyncImage(url: pokemon.sprite) { img in
                             img
+                                .interpolation(.none)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
@@ -122,7 +123,7 @@ struct HomeScreen: View {
                 }
             }
         }
-        //        .preferredColorScheme(.dark)
+                .preferredColorScheme(.dark)
     }
 
     private func fetchPokemons() {
