@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="25B78" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24299" systemVersion="25C56" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Pokemon" representedClassName="Pokemon" syncable="YES" codeGenerationType="class">
         <attribute name="attack" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="defense" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -8,10 +8,12 @@
         <attribute name="id" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="shiny" attributeType="URI"/>
+        <attribute name="shinyImg" optional="YES" attributeType="Binary"/>
         <attribute name="specialAttack" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="specialDefense" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="speed" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sprite" attributeType="URI"/>
+        <attribute name="spriteImg" optional="YES" attributeType="Binary"/>
         <attribute name="types" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <uniquenessConstraints>
             <uniquenessConstraint>

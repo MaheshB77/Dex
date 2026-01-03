@@ -49,15 +49,24 @@ struct HomeScreen: View {
                         PokemonDetails()
                             .environmentObject(pokemon)
                     } label: {
-                        AsyncImage(url: pokemon.sprite) { img in
-                            img
+                        if (pokemon.spriteImg != nil) {
+                            Image(uiImage: UIImage(data: pokemon.spriteImg!)!)
                                 .interpolation(.none)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
-                        } placeholder: {
-                            ProgressView()
-                                .frame(width: 100, height: 100)
+                                
+                        } else {
+                            AsyncImage(url: pokemon.sprite) { img in
+                                img
+                                    .interpolation(.none)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                            } placeholder: {
+                                ProgressView()
+                                    .frame(width: 100, height: 100)
+                            }
                         }
                         VStack(alignment: .leading) {
                             HStack {
@@ -85,12 +94,17 @@ struct HomeScreen: View {
                         }
                     }
                     .swipeActions(edge: .leading) {
-                        Button(pokemon.favorite ? "Remove from favorites" : "Add to favorites") {
+                        Button(
+                            pokemon.favorite
+                                ? "Remove from favorites" : "Add to favorites"
+                        ) {
                             pokemon.favorite.toggle()
                             do {
                                 try viewContext.save()
                             } catch {
-                                print("Failed to update favorite status: \(error)")
+                                print(
+                                    "Failed to update favorite status: \(error)"
+                                )
                             }
                         }
                         .tint(pokemon.favorite ? .gray : .yellow)
@@ -123,7 +137,7 @@ struct HomeScreen: View {
                 }
             }
         }
-                .preferredColorScheme(.dark)
+        .preferredColorScheme(.dark)
     }
 
     private func fetchPokemons() {
@@ -152,6 +166,28 @@ struct HomeScreen: View {
                 } catch {
                     print(error)
                 }
+            }
+            storeImages()
+        }
+    }
+
+    private func storeImages() {
+        Task {
+            do {
+                for pokemon in pokemons {
+                    pokemon.spriteImg = try await URLSession.shared.data(
+                        from: pokemon.sprite!
+                    ).0
+                    pokemon.shinyImg = try await URLSession.shared.data(
+                        from: pokemon.shiny!
+                    ).0
+                    
+                    try viewContext.save()
+                    
+                    print("Stored images for \(pokemon.name ?? "unknown")")
+                }
+            } catch {
+                print("Error while fetching images: \(error)")
             }
         }
     }

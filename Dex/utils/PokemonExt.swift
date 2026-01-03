@@ -46,6 +46,21 @@ extension Pokemon {
         stats.max(by: { $0.value < $1.value })!
     }
     
+    var spriteImage: Image {
+        if let data = spriteImg, let image = UIImage(data: data) {
+            return Image(uiImage: image)
+        } else {
+            return Image(systemName: "questionmark")
+        }
+    }
+    
+    var shinyImage: Image {
+        if let data = shinyImg, let image = UIImage(data: data) {
+            return Image(uiImage: image)
+        } else {
+            return Image(systemName: "questionmark")
+        }
+    }
 }
 
 struct Stat: Identifiable {
